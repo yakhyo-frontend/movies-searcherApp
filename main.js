@@ -31,7 +31,7 @@ const searchMovies = () => {
   const query = elInput.value.trim();
 
   if (query !== "") {
-    const newApi = `http://www.omdbapi.com/?s=${query}&apikey=c65fcde9`;
+    const newApi = `https://www.omdbapi.com/?s=${query}&apikey=c65fcde9`;
     getData(newApi);
   }
 };
