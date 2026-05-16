@@ -1,4 +1,4 @@
-const api = `http://www.omdbapi.com/?s=batman&apikey=c65fcde9`;
+const api = `https://www.omdbapi.com/?s=batman&apikey=c65fcde9`;
 const elLoading = document.querySelector(".loading");
 const elList = document.querySelector(".list");
 
