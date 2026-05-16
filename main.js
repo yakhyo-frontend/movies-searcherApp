@@ -1,4 +1,5 @@
 const api = `https://www.omdbapi.com/?s=batman&apikey=c65fcde9`;
+const getOneApi = `https://www.omdbapi.com/?apikey=c65fcde9&i=tt1285016`;
 const elLoading = document.querySelector(".loading");
 const elList = document.querySelector(".list");
 
@@ -16,16 +17,6 @@ const getData = (url) => {
 };
 
 getData(api);
-// const searchMovies = () => {
-//   const query = elInput.value.trim();
-
-//   if (query !== "") {
-//     const newApi = `http://www.omdbapi.com/?s=${query}&apikey=c65fcde9`;
-//     getData(newApi);
-//   }
-// };
-
-// elBtn.addEventListener("click", searchMovies);
 
 const searchMovies = () => {
   const query = elInput.value.trim();
@@ -38,17 +29,13 @@ const searchMovies = () => {
 
 elBtn.addEventListener("click", searchMovies);
 
-elInput.addEventListener("keypress", () => {
-  searchMovies;
-});
-
 function showData(movies) {
   elList.innerHTML = "";
 
   if (movies.Response === "True") {
     const { Search } = movies;
     Search.forEach((element) => {
-      const { Poster, Title, Type, Year } = element;
+      const { Poster, Title, Type, Year, imdbID } = element;
       console.log(element);
 
       elList.innerHTML += `
@@ -57,10 +44,61 @@ function showData(movies) {
           <h4 class="title">${Title.slice(0, 17)}...</h4>
           <p class="year">${Year}</p>
           <p class="type">${Type}</p>
+          <button class="s-btn" onclick="getOneMovies('${imdbID}')">More information</button>
           </div>
       `;
     });
   } else {
     elList.innerHTML = `<p class="loading">Ничего не найдено по этому запросу</p>`;
   }
+}
+
+// Modal
+
+const modal = document.querySelector(".modal");
+
+function getOneMovies(id) {
+  console.log("id:", id);
+  fetch(`https://www.omdbapi.com/?apikey=c65fcde9&i=${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const {
+        Title,
+        Year,
+        Poster,
+        Director,
+        Runtime,
+        Released,
+        Rated,
+        Writer,
+        Actors,
+        Plot,
+        Genre,
+      } = data;
+
+      if (data.Response === "True") {
+        console.log(data);
+
+        modal.innerHTML = `
+        <div class="modal-content">
+          <div>
+            <img class="img" src="${Poster}" alt="" />
+          </div>
+          <div class="info">
+          <h1><span class="title-span">Title :</span> ${Title.slice(0, 35)}...</h1>
+          <p><span class="year-span">Year :</span> ${Year}</p>
+          <p><span class="rated-span">Rated :</span> ${Rated}</p>
+          <p><span class="rel-span">Released : </span>${Released}</p>
+          <p><span class="dirc-span">Director :</span> ${Director}</p>
+          <p><span class="run-span">Runtime : </span>${Runtime}</p>
+          <p><span class="writer-span">Writer :</span> ${Writer}</p>
+          <p><span class="actors-span">Actors :</span> ${Actors}</p>
+          <p><span class="plot-span">Plot :</span> ${Plot.slice(0, 35)}...</p>
+          <p><span class="genre-span">Genre :</span> ${Genre}</p></div>
+        </div>
+        `;
+      } else {
+        alert("Filmni malumoti topilmadi");
+      }
+    });
 }
