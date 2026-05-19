@@ -56,47 +56,73 @@ function showData(movies) {
 // Modal
 
 const modal = document.querySelector(".modal");
+const overlay = document.getElementById("overlay");
+const closeModalBtn = document.getElementById("closeModal");
+
+function openModal() {
+  overlay.classList.add("active");
+}
+
+function closeModal() {
+  overlay.classList.remove("active");
+  modal.innerHTML = "";
+}
+
+closeModalBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", (event) => {
+  if (event.target === overlay) {
+    closeModal();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && overlay.classList.contains("active")) {
+    closeModal();
+  }
+});
 
 function getOneMovies(id) {
-  console.log("id:", id);
   fetch(`https://www.omdbapi.com/?apikey=c65fcde9&i=${id}`)
     .then((response) => response.json())
     .then((data) => {
-      const {
-        Title,
-        Year,
-        Poster,
-        Director,
-        Runtime,
-        Released,
-        Rated,
-        Writer,
-        Actors,
-        Plot,
-        Genre,
-      } = data;
-
       if (data.Response === "True") {
-        console.log(data);
+        const {
+          Title,
+          Year,
+          Poster,
+          Director,
+          Runtime,
+          Released,
+          Rated,
+          Writer,
+          Actors,
+          Plot,
+          Genre,
+          Type,
+        } = data;
 
         modal.innerHTML = `
         <div class="modal-content">
           <div>
-            <img class="img" src="${Poster}" alt="" />
+            <img class="img" src="${Poster}" alt="${Title}" />
           </div>
           <div class="info">
-          <h1><span class="title-span">Title :</span> ${Title.slice(0, 35)}...</h1>
-          <p><span class="year-span">Year :</span> ${Year}</p>
-          <p><span class="rated-span">Rated :</span> ${Rated}</p>
-          <p><span class="rel-span">Released : </span>${Released}</p>
-          <p><span class="dirc-span">Director :</span> ${Director}</p>
-          <p><span class="run-span">Runtime : </span>${Runtime}</p>
-          <p><span class="writer-span">Writer :</span> ${Writer}</p>
-          <p><span class="actors-span">Actors :</span> ${Actors}</p>
-          <p><span class="plot-span">Plot :</span> ${Plot.slice(0, 35)}...</p>
-          <p><span class="genre-span">Genre :</span> ${Genre}</p></div>
+            <h1><span class="title-span">Title :</span> ${Title}</h1>
+            <p><span class="year-span">Year :</span> ${Year}</p>
+            <p><span class="rated-span">Rated :</span> ${Rated}</p>
+            <p><span class="rel-span">Released :</span> ${Released}</p>
+            <p><span class="dirc-span">Director :</span> ${Director}</p>
+            <p><span class="run-span">Runtime :</span> ${Runtime}</p>
+            <p><span class="writer-span">Writer :</span> ${Writer}</p>
+            <p><span class="actors-span">Actors :</span> ${Actors}</p>
+            <p><span class="plot-span">Plot :</span> ${Plot}</p>
+            <p><span class="genre-span">Genre :</span> ${Genre}</p>
+            <p><span class="genre-span">Type :</span> ${Type}</p>
+          </div>
         </div>
         `;
+
+        openModal();
       } else {
         alert("Filmni malumoti topilmadi");
       }
